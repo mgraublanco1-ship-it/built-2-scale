@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Built to Scale – Consulting for Small Businesses</title>
+  <!-- Fonts & Bootstrap -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root{
+      --bt-primary:#0f172a; /* slate-900 */
+      --bt-accent:#2563eb;  /* blue-600 */
+      --bt-accent-2:#60a5fa; /* blue-400 */
+      --bt-muted:#f8fafc;
+      --bt-border:#e5e7eb;
+      --radius:1.25rem;
+      --success:#10b981; /* emerald-500 */
+      --success-ink:#065f46;
+      --success-bg:rgba(16,185,129,.12);
+      --success-brd:rgba(16,185,129,.25);
+    }
+    html,body{ height:100%; }
+    body{ color:#0f172a; font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+
+    /* Buttons */
+    .btn-primary{ background:var(--bt-primary); border-color:var(--bt-primary); }
+    .btn-primary:hover{ background:#111827; border-color:#111827; }
+    .btn-gradient{ background: linear-gradient(90deg, var(--bt-accent), var(--bt-accent-2)); border: none; color:#fff; }
+    .btn-gradient:hover{ filter: brightness(0.95); }
+
+    /* Utilities */
+    .shadow-soft{ box-shadow:0 10px 30px rgba(2,6,23,.06); }
+    .card-lift{ transition: transform .22s ease, box-shadow .22s ease; border:1px solid var(--bt-border); border-radius: var(--radius); }
+    .card-lift:hover{ transform: translateY(-4px); box-shadow:0 16px 40px rgba(2,6,23,.10); }
+    .section-muted{ background:linear-gradient(180deg,var(--bt-muted), #ffffff); }
+    .navbar-blur{ backdrop-filter: saturate(1.4) blur(10px); background:rgba(255,255,255,.82); border-bottom:1px solid rgba(2,6,23,.06); }
+    .link-underline{ text-decoration:none; border-bottom:1px solid rgba(37,99,235,.35); }
+    .icon-circle{ width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; background:#eef2ff; color:#4338ca; }
+    .stat{ border:1px solid var(--bt-border); border-radius: var(--radius); padding:1.25rem; }
+    .step-number{ width:36px; height:36px; border-radius:50%; background:#e2e8f0; display:inline-flex; align-items:center; justify-content:center; font-weight:600; color:#0f172a; }
+    .badge-soft{ background: rgba(37,99,235,.08); color: var(--bt-accent); border:1px solid rgba(37,99,235,.15); }
+
+    /* Logo */
+    .bts-logo{ width:28px; height:28px; display:inline-block; transform: rotate(-20deg); transform-origin: center; }
+
+    /* Hero */
+    header.hero{
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(37,99,235,.12), transparent 60%),
+                  radial-gradient(1000px 500px at 100% 0%, rgba(96,165,250,.12), transparent 60%),
+                  linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      position: relative; overflow: hidden; padding-bottom: 6rem; z-index: 1;
+    }
+    .hero .shape{ position:absolute; inset:auto 0 0 0; height:80px; z-index:0; pointer-events:none; }
+    .hero .container-xxl{ position:relative; z-index:1; }
+
+    /* KPI dashboard cards: thinner with area-trend background */
+    .kpi-card{ 
+      position:relative; 
+      background:#fff; border:1px solid var(--bt-border); border-radius:12px; padding:10px 8px; 
+      box-shadow:0 6px 18px rgba(2,6,23,.06); height:auto; overflow:hidden;
+      display:flex; flex-direction:column; justify-content:center;
+      min-width:150px;
+    }
+    .kpi-inner{ position:relative; z-index:2; }
+    .kpi-title{ font-size:.7rem; letter-spacing:.04em; text-transform:uppercase; color:#64748b; margin:0 0 4px; white-space:nowrap; }
+    .kpi-value{ font-weight:700; font-size:1.3rem; line-height:1.1; margin:0 0 6px; }
+    .kpi-sub{ display:flex; align-items:center; gap:8px; font-size:.75rem; color:#64748b; flex-wrap:nowrap; }
+    .delta{ display:inline-flex; align-items:center; gap:6px; font-size:.8rem; font-weight:600; color:var(--success-ink); background:var(--success-bg); border:1px solid var(--success-brd); padding:4px 10px; border-radius:999px; white-space:nowrap; }
+
+    .kpi-area{ position:absolute; bottom:0; left:0; right:0; height:100%; z-index:0; pointer-events:none; }
+    .kpi-area path.line{ stroke:rgba(37,99,235,.08); stroke-width:0; fill:none; stroke-linecap:round; }
+    .kpi-area path.fill{ fill:rgba(37,99,235,.08); }
+
+    /* Sections spacing */
+    section{ scroll-margin-top: 90px; }
+
+    /* Mobile polish */
+    @media (max-width: 576px){
+      header h1.display-5{ font-size:2rem; }
+      header p.lead{ font-size:1rem; }
+      .navbar-brand{ font-size:1rem; }
+      .bts-logo{ width:22px; height:22px; }
+      .kpi-card{ padding:10px 8px; }
+      .kpi-value{ font-size:1.25rem; margin-bottom:6px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-blur sticky-top">
+    <div class="container-xxl">
+      <a class="navbar-brand fw-semibold d-flex align-items-center" href="#home">
+        <svg class="bts-logo me-2" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Built to Scale logo">
+          <polyline points="6,46 22,30 38,46 58,26" fill="none" stroke="#2563eb" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="58,36 58,26 48,26" fill="none" stroke="#2563eb" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Built to Scale
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="#ai">AI & Automation</a></li>
+          <li class="nav-item"><a class="nav-link" href="#case">Case Study</a></li>
+          <li class="nav-item"><a class="nav-link" href="#approach">Approach</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header id="home" class="hero py-5 py-lg-6">
+    <div class="container-xxl">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <span class="badge badge-soft me-2">Strategic Partner</span>
+          <span class="badge bg-primary">For Small Businesses</span>
+          <h1 class="display-5 fw-bold mt-3">Build simple systems that answer the right questions—and scale</h1>
+          <p class="lead text-secondary mt-3">I help founders solve financial, operational, and marketing problems with practical automation and AI integration. We start with the questions that matter, then design lightweight systems that deliver clarity and results.</p>
+          <div class="d-flex gap-2 mt-3">
+            <a href="#services" class="btn btn-gradient btn-lg"><i class="bi bi-rocket-takeoff me-2"></i>Explore Services</a>
+            <a href="#case" class="btn btn-outline-secondary btn-lg"><i class="bi bi-journal-text me-2"></i>See Case Study</a>
+          </div>
+
+          <!-- KPI CARDS with area trends -->
+          <div class="row g-3 mt-4">
+            <!-- KPI 1: Uptrend (Gross Margin Uplift) -->
+            <div class="col-12 col-sm-6 col-md-4">
+              <div class="kpi-card">
+                <svg class="kpi-area" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path class="fill" d="M0 34 L10 33 L20 31 L30 27 L40 25 L50 22 L60 18 L70 14 L80 12 L90 10 L100 8 L100 40 L0 40 Z"/>
+                  <path class="line" d="M0 34 L10 33 L20 31 L30 27 L40 25 L50 22 L60 18 L70 14 L80 12 L90 10 L100 8"/>
+                </svg>
+                <div class="kpi-inner">
+                  <div class="kpi-title">Gross Margin Uplift</div>
+                  <div class="kpi-value">+9 pp</div>
+                  <div class="kpi-sub"><span class="delta"><i class="bi bi-arrow-up-right"></i> 12.5%</span><span>vs. baseline</span></div>
+                </div>
+              </div>
+            </div>
+            <!-- KPI 2: Downtrend (Reporting Time) -->
+            <div class="col-12 col-sm-6 col-md-4">
+              <div class="kpi-card">
+                <svg class="kpi-area" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path class="fill" d="M0 8 L10 10 L20 12 L30 14 L40 16 L50 18 L60 22 L70 26 L80 30 L90 33 L100 34 L100 40 L0 40 Z"/>
+                  <path class="line" d="M0 8 L10 10 L20 12 L30 14 L40 16 L50 18 L60 22 L70 26 L80 30 L90 33 L100 34"/>
+                </svg>
+                <div class="kpi-inner">
+                  <div class="kpi-title">Reporting Time</div>
+                  <div class="kpi-value">-75%</div>
+                  <div class="kpi-sub"><span class="delta"><i class="bi bi-arrow-up-right"></i> 3.2× faster</span></div>
+                </div>
+              </div>
+            </div>
+            <!-- KPI 3: Uptrend (Budget to High‑ROI) -->
+            <div class="col-12 col-sm-6 col-md-4">
+              <div class="kpi-card">
+                <svg class="kpi-area" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path class="fill" d="M0 34 L12 33 L24 30 L36 28 L48 26 L60 22 L72 18 L84 15 L96 12 L100 11 L100 40 L0 40 Z"/>
+                  <path class="line" d="M0 34 L12 33 L24 30 L36 28 L48 26 L60 22 L72 18 L84 15 L96 12 L100 11"/>
+                </svg>
+                <div class="kpi-inner">
+                  <div class="kpi-title">Budget to High‑ROI</div>
+                  <div class="kpi-value">+40%</div>
+                  <div class="kpi-sub"><span class="delta"><i class="bi bi-arrow-up-right"></i> reallocated</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /KPI CARDS -->
+
+        </div>
+        <div class="col-lg-5">
+          <div class="p-4 p-lg-5 bg-white rounded-4 border shadow-soft card-lift">
+            <div class="d-flex align-items-start gap-3">
+              <div class="icon-circle"><i class="bi bi-bar-chart"></i></div>
+              <div>
+                <h6 class="mb-1">Financial clarity</h6>
+                <p class="mb-0 small text-secondary">Unit economics, product & channel profitability, pricing insights.</p>
+              </div>
+            </div>
+            <hr>
+            <div class="d-flex align-items-start gap-3">
+              <div class="icon-circle"><i class="bi bi-diagram-3"></i></div>
+              <div>
+                <h6 class="mb-1">Operational efficiency</h6>
+                <p class="mb-0 small text-secondary">Repeatable processes and lean operating rhythms that scale.</p>
+              </div>
+            </div>
+            <hr>
+            <div class="d-flex align-items-start gap-3">
+              <div class="icon-circle"><i class="bi bi-cpu"></i></div>
+              <div>
+                <h6 class="mb-1">AI-driven decisions</h6>
+                <p class="mb-0 small text-secondary">Automations and AI to reduce manual work and surface faster answers.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <svg class="shape" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,64 C240,16 480,0 720,0 C960,0 1200,16 1440,64 L1440,80 L0,80 Z" fill="#ffffff"/></svg>
+  </header>
+
+  <!-- Services -->
+  <section id="services" class="py-5">
+    <div class="container-xxl">
+      <div class="row align-items-end g-3 mb-3">
+        <div class="col-lg-8">
+          <h2 class="fw-bold mb-0">Consulting Services</h2>
+          <p class="text-secondary">Flexible, outcome‑first engagements. Tool‑agnostic by design.</p>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="p-4 rounded-4 bg-white card-lift h-100">
+            <div class="d-flex align-items-center gap-2 mb-2"><i class="bi bi-cash-coin"></i><h5 class="mb-0">Fractional Ops & Finance</h5></div>
+            <p class="text-secondary small">Clarity on margins, cash, capacity and pricing so you can scale with confidence.</p>
+            <ul class="small mb-0">
+              <li>P&L by product & channel</li>
+              <li>Unit economics & pricing levers</li>
+              <li>Inventory & resource planning</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="p-4 rounded-4 bg-white card-lift h-100">
+            <div class="d-flex align-items-center gap-2 mb-2"><i class="bi bi-graph-up-arrow"></i><h5 class="mb-0">Growth Strategy & Experiments</h5></div>
+            <p class="text-secondary small">Translate goals into measurable hypotheses and run lean experiments.</p>
+            <ul class="small mb-0">
+              <li>Acquisition, retention & AOV playbooks</li>
+              <li>Channel mix & attribution choices</li>
+              <li>Test design, tracking & readouts</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="p-4 rounded-4 bg-white card-lift h-100">
+            <div class="d-flex align-items-center gap-2 mb-2"><i class="bi bi-magic"></i><h5 class="mb-0">Automated Insights & AI</h5></div>
+            <p class="text-secondary small">Simple, durable systems that surface the right answers at the right time.</p>
+            <ul class="small mb-0">
+              <li>Founders’ KPI dashboards</li>
+              <li>Monthly operating review cadence</li>
+              <li>Alerts for anomalies & opportunities</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI & Automation -->
+  <section id="ai" class="py-5 section-muted">
+    <div class="container-xxl">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <h2 class="fw-bold">AI & Automation, Only Where It Adds ROI</h2>
+          <p class="text-secondary">I integrate automation and AI into your workflows to eliminate repetitive work, improve forecast accuracy, and accelerate decisions. The stack adapts to your business—not the other way around.</p>
+          <div class="d-flex gap-3">
+            <span class="badge bg-light text-dark border">Time saved</span>
+            <span class="badge bg-light text-dark border">Fewer errors</span>
+            <span class="badge bg-light text-dark border">Faster decisions</span>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="p-4 bg-white rounded-4 shadow-soft card-lift">
+            <div class="d-flex align-items-start gap-3 mb-3">
+              <div class="icon-circle"><i class="bi bi-lightning-charge"></i></div>
+              <div>
+                <h6 class="mb-1">Automation audit</h6>
+                <p class="small text-secondary mb-0">Identify high‑impact opportunities in finance, ops, and marketing.</p>
+              </div>
+            </div>
+            <div class="d-flex align-items-start gap-3 mb-3">
+              <div class="icon-circle"><i class="bi bi-robot"></i></div>
+              <div>
+                <h6 class="mb-1">AI‑enabled workflows</h6>
+                <p class="small text-secondary mb-0">From data capture to insights, tailored to your questions.</p>
+              </div>
+            </div>
+            <div class="d-flex align-items-start gap-3">
+              <div class="icon-circle"><i class="bi bi-check2-circle"></i></div>
+              <div>
+                <h6 class="mb-1">Sustainable systems</h6>
+                <p class="small text-secondary mb-0">Lightweight, documented, and easy for your team to run.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Study -->
+  <section id="case" class="py-5">
+    <div class="container-xxl">
+      <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+        <h2 class="fw-bold mb-0">Case Study: Luna & Sol Organics</h2>
+        <span class="text-uppercase small text-secondary">Shopify • Skincare • USA</span>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="p-4 bg-white rounded-4 card-lift h-100">
+            <h6 class="fw-semibold">Client</h6>
+            <p class="small text-secondary mb-0">Eco‑friendly skincare brand selling via Shopify: facial oils, moisturizers, and soaps.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-4 bg-white rounded-4 card-lift h-100">
+            <h6 class="fw-semibold">Problem</h6>
+            <p class="small text-secondary mb-0">High sales volume with limited visibility into profitability by SKU and channel. Manual reporting.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-4 bg-white rounded-4 card-lift h-100">
+            <h6 class="fw-semibold">Objective</h6>
+            <p class="small text-secondary mb-0">Establish an operating model with P&L by product/channel and a reinvestment plan tied to ROI.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-4 mt-4 bg-white card-lift">
+        <h6 class="fw-semibold mb-2">Key Questions</h6>
+        <ul class="small mb-0">
+          <li>Which products generate the highest and lowest margins?</li>
+          <li>Which channels contribute most to revenue and profit?</li>
+          <li>How do discounts and shipping policies impact margin?</li>
+          <li>Which SKUs should be phased out or doubled down on?</li>
+          <li>What is the optimal allocation of marketing spend?</li>
+          <li>Where can automation/AI reduce manual effort or improve decisions?</li>
+        </ul>
+      </div>
+
+      <div class="row g-4 mt-1">
+        <div class="col-md-6">
+          <div class="p-4 bg-white rounded-4 card-lift h-100">
+            <h6 class="fw-semibold mb-2">Methodology</h6>
+            <ol class="small mb-0 ps-3">
+              <li>Scope and align on goals, constraints, and KPIs.</li>
+              <li>Structure data to consistently answer the key questions.</li>
+              <li>Build a lightweight P&L by product and by channel.</li>
+              <li>Design a founders’ dashboard and review cadence.</li>
+              <li>Recommend actions and a reinvestment plan.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-4 bg-white rounded-4 card-lift h-100">
+            <h6 class="fw-semibold mb-2">Key Findings</h6>
+            <ul class="small mb-0">
+              <li><strong>Top product:</strong> Rosehip Facial Oil – 45% margin.</li>
+              <li><strong>Top channel:</strong> Instagram Checkout, +30% AOV vs. others.</li>
+              <li><strong>Underperformer:</strong> Aloe & Mint Soap – 8% margin due to high COGS and discounting.</li>
+              <li><strong>Cost leak:</strong> Free shipping lowered margin ~12% on low‑ticket orders.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-4 mt-4 bg-white card-lift">
+        <h6 class="fw-semibold">Results</h6>
+        <div class="row g-3 mt-1 text-center">
+          <div class="col-6 col-md-3"><div class="stat"><div class="h4 mb-0">+9 pp</div><small class="text-secondary">Gross margin (22% → 31%)</small></div></div>
+          <div class="col-6 col-md-3"><div class="stat"><div class="h4 mb-0">-75%</div><small class="text-secondary">Reporting time (6h → 15m)</small></div></div>
+          <div class="col-6 col-md-3"><div class="stat"><div class="h4 mb-0">+40%</div><small class="text-secondary">Budget shifted to high‑ROI</small></div></div>
+          <div class="col-6 col-md-3"><div class="stat"><div class="h4 mb-0">Focus</div><small class="text-secondary">Top SKUs, high‑margin mix</small></div></div>
+        </div>
+      </div>
+
+      <div class="d-lg-flex align-items-center justify-content-between gap-3 rounded-4 p-4 mt-4 shadow-soft card-lift bg-white">
+        <div>
+          <h5 class="mb-1">Want this kind of clarity for your business?</h5>
+          <p class="small text-secondary mb-0">Includes assessment, operating model, dashboard, and action plan.</p>
+        </div>
+        <div class="mt-3 mt-lg-0 d-flex gap-2">
+          <a href="#contact" class="btn btn-gradient"><i class="bi bi-calendar-event me-2"></i>Book an intro call</a>
+          <a href="#contact" class="btn btn-outline-secondary">Get a proposal</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Approach -->
+  <section id="approach" class="py-5 section-muted">
+    <div class="container-xxl">
+      <h2 class="fw-bold">Engagement Approach</h2>
+      <div class="row g-4 mt-1">
+        <div class="col-md-6 col-lg-4">
+          <div class="p-4 bg-white rounded-4 card-lift h-100">
+            <div class="step-number">1</div>
+            <h6 class="fw-semibold mt-2 mb-1">Discover</h6>
+            <p class="small text-secondary mb-0">Clarify goals, constraints, and the questions that matter.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="p-4 bg-white rounded-4 card-lift h-100">
+            <div class="step-number">2</div>
+            <h6 class="fw-semibold mt-2 mb-1">Diagnose</h6>
+            <p class="small text-secondary mb-0">Map systems, metrics, and bottlenecks across finance, ops, and marketing.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="p-4 bg-white rounded-4 card-lift h-100">
+            <div class="step-number">3</div>
+            <h6 class="fw-semibold mt-2 mb-1">Design</h6>
+            <p class="small text-secondary mb-0">Create a simple operating model, KPIs, and decision rhythms.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-6">
+          <div class="p-4 bg-white rounded-4 card-lift h-100">
+            <div class="step-number">4</div>
+            <h6 class="fw-semibold mt-2 mb-1">Deploy</h6>
+            <p class="small text-secondary mb-0">Implement lightweight automations and AI where they add clear ROI.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-6">
+          <div class="p-4 bg-white rounded-4 card-lift h-100">
+            <div class="step-number">5</div>
+            <h6 class="fw-semibold mt-2 mb-1">Iterate</h6>
+            <p class="small text-secondary mb-0">Run reviews, refine, and scale what works.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-5">
+    <div class="container-xxl">
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <h2 class="fw-bold">Contact</h2>
+          <p class="text-secondary">Ready to scale with a systems partner? Send a note with a brief description of your business and goals.</p>
+          <div class="d-grid d-sm-flex gap-2">
+            <a href="mailto:mgrau@built-2-scale.com" class="btn btn-gradient"><i class="bi bi-envelope me-2"></i>mgrau@built-2-scale.com</a>
+            <a href="#" class="btn btn-outline-secondary"><i class="bi bi-calendar-event me-2"></i>Book on Calendly</a>
+          </div>
+          <p class="small text-secondary mt-3">Prefer a quick intro? <a class="link-underline" href="#">Grab a 15‑min slot</a>.</p>
+        </div>
+        <div class="col-lg-6">
+          <div class="p-4 rounded-4 bg-white card-lift">
+            <h6 class="fw-semibold mb-2">What to expect</h6>
+            <ul class="small mb-0">
+              <li>30‑min discovery call</li>
+              <li>Outline of opportunities and quick wins</li>
+              <li>Proposal with scope, timeline, and outcomes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="text-secondary small mt-5">© <span id="y"></span> Built to Scale. All rights reserved.</div>
+    </div>
+  </section>
+
+  <script>
+    const yEl = document.getElementById('y');
+    if (yEl) { yEl.textContent = new Date().getFullYear(); }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
